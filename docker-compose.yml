@@ -1,24 +1,64 @@
 services:
   cortex:
     build: .
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
       QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+      APP_SECRET_KEY: ${APP_SECRET_KEY}
+      CORTEX_ADMIN_USERNAME: ${CORTEX_ADMIN_USERNAME}
+      CORTEX_ADMIN_PASSWORD: ${CORTEX_ADMIN_PASSWORD}
+      CORTEX_ADMIN_SESSION_SECRET: ${CORTEX_ADMIN_SESSION_SECRET}
+      LLM_PROVIDER: ${LLM_PROVIDER}
+      LLM_BASE_URL: ${LLM_BASE_URL}
+      LLM_API_KEY: ${LLM_API_KEY}
+      LLM_MODEL: ${LLM_MODEL}
+      LLM_AUTH_MODE: ${LLM_AUTH_MODE}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL}
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      EMBEDDINGS_MODEL: ${EMBEDDINGS_MODEL}
+      EMBEDDINGS_BASE_URL: ${EMBEDDINGS_BASE_URL}
+      EMBEDDINGS_DIMS: ${EMBEDDINGS_DIMS}
+      QDRANT_API_KEY: ${QDRANT_API_KEY}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL}
+      TELEGRAM_INTERNAL_SECRET: ${TELEGRAM_INTERNAL_SECRET}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB}
+      CHUNK_SIZE: ${CHUNK_SIZE}
+      CHUNK_OVERLAP: ${CHUNK_OVERLAP}
+      RETRIEVAL_TOP_K: ${RETRIEVAL_TOP_K}
+      MIN_SIMILARITY_SCORE: ${MIN_SIMILARITY_SCORE}
+      COOKIE_SECURE: ${COOKIE_SECURE}
+      APP_ENV: ${APP_ENV}
     depends_on:
-      - qdrant
+    - qdrant
     restart: unless-stopped
-
+    expose:
+    - "3000"
+    deploy:
+      resources:
+        limits:
+          memory: '134217728'
+          cpus: 0.25
+        reservations: {}
+    mem_limit: 134217728
+    memswap_limit: 134217728
+    cpus: 0.25
   qdrant:
     image: qdrant/qdrant:latest
-    ports:
-      - "6333:6333"
     volumes:
-      - qdrant_data:/qdrant/storage
+    - qdrant_data:/qdrant/storage
     restart: unless-stopped
-
+    expose:
+    - "6333"
+    deploy:
+      resources:
+        limits:
+          memory: '134217728'
+          cpus: 0.25
+        reservations: {}
+    mem_limit: 134217728
+    memswap_limit: 134217728
+    cpus: 0.25
 volumes:
   qdrant_data:
